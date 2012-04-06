@@ -1,4 +1,4 @@
-= schematize https://secure.travis-ci.org/trevmex/schematize.png
+= schematize {<img src="https://secure.travis-ci.org/trevmex/schematize.png" />}[http://travis-ci.org/trevmex/schematize]
 
 Description goes here.
 
