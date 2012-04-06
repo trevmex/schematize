@@ -1,0 +1,48 @@
+package <%= schema.package %>.impl;
+
+import static org.junit.Assert.*;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+<% imports = [] %><% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %><% imports.push(info[:import]) unless info[:import].blank? %><% end %>
+import <%= schema.package %>.<%= schema.type %>;
+<% imports.uniq.sort {|x,y| x.to_s <=> y.to_s }.each do |import| %>
+<%= "import #{import};" unless import == "#{schema.package}.#{schema.type}" %><% end %>
+
+public class Immutable<%= schema.type %>Test {
+
+    public Immutable<%= schema.type %> empty<%= schema.type %> = new Immutable<%= schema.type %>.Builder().get();
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void typeIsCorrect() {
+        assertEquals("<%= schema.type %>", empty<%= schema.type %>.getType());
+    }
+
+    @Test
+    public void dataItemtypeURLIs<% if schema.data_itemtype_url.blank? %>Unaccessible<% else %>Correct<% end %>() {
+<% if schema.data_itemtype_url.blank? %>
+        exception.expect(IllegalStateException.class);
+        exception.expectMessage("dataItemtypeURL is only defined for extended schema.");
+        empty<%= schema.type %>.getDataItemtypeURL();
+<% else %>
+        assertEquals("<%= schema.data_itemtype_url %>", empty<%= schema.type %>.getDataItemtypeURL());
+<% end %>
+    }
+<% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+    @Test
+    public void when<%= name.to_s.camelize %>IsNotDefined_<%= name %>IsNull() {
+        assertNull(empty<%= schema.type %>.get<%= name.to_s.camelize %>());
+    }
+
+    @Test
+    public void when<%= name.to_s.camelize %>IsDefined_<%= name %>IsReturned() {
+        <%= info[:type] %> expected = new <%= "Immutable" unless DataType.native_java_class?(info[:type]) %><%= info[:type] %><%= ".Builder().get" unless DataType.native_java_class?(info[:type]) %>();<%= " // Specific Types: #{info[:specific_types]}" unless info[:specific_types].blank? %>
+
+        assertEquals(expected, new Immutable<%= schema.type %>.Builder().<%= name %>(expected).get().get<%= name.to_s.camelize %>());
+    }
+<% end unless SchemaMapper::Schema.property_chain(schema, {}).blank? %>
+}

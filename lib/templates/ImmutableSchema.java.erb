@@ -1,0 +1,71 @@
+package <%= schema.package %>.impl;
+<% imports = [] %><% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %><% imports.push(info[:import]) unless info[:import].blank? %><% end %>
+import <%= schema.package %>.<%= schema.type %>;
+<% imports.uniq.sort {|x,y| x.to_s <=> y.to_s }.each do |import| %>
+<%= "import #{import};" unless import == "#{schema.package}.#{schema.type}" %><% end %>
+
+/**
+ * Immutable version of <%= schema.type %>
+ *
+ * Create an instance of Immutable<%= schema.type %> using:
+ *
+ * <code>new Immutable<%= schema.type %>.Builder().name("test name").get()</code>
+ */
+public class Immutable<%= schema.type %> implements <%= schema.type %>{
+<% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+    private final <%= info[:type] %> <%= name %>;<%= " // Specific Types: #{info[:specific_types]}" unless info[:specific_types].blank? %><% end unless schema.properties.blank? %>
+
+    /**
+     * Builder class used to create an instance of Immutable<%= schema.type %>
+     */
+    public static class Builder implements Supplier<Immutable<%= schema.type %>> {
+
+        // Optional parameters = initialized to default values<% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+        private <%= info[:type] %> <%= name %> = null;<%= " // Specific Types: #{info[:specific_types]}" unless info[:specific_types].blank? %><% end unless SchemaMapper::Schema.property_chain(schema, {}).blank? %>
+
+        /**
+         * Constructor for Immutable<%= schema.type %> Builder
+         */
+        public Builder() {}
+<% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+        /**
+         * @param val the <%= name %> to set
+         * @return this instance of the builder for fluent chaining
+         */
+        public Builder <%= name %>(<%= info[:type] %> val) {<%= " // Specific Types: #{info[:specific_types]}" unless info[:specific_types].blank? %>
+            <%= name %> = val;
+            return this;
+        }
+<% end unless SchemaMapper::Schema.property_chain(schema, {}).blank? %>
+        public Immutable<%= schema.type %> get() {
+            return new Immutable<%= schema.type %>(this);
+        }
+    }
+
+    private Immutable<%= schema.type %>(Builder builder) {
+        <% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+        <%= name %> = builder.<%= name %>;<% end unless SchemaMapper::Schema.property_chain(schema, {}).blank? %>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getType() {
+        return <%= schema.type %>;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDataItemtypeURL() {
+        <% if schema.data_itemtype_url.blank? %>throw new IllegalStateException("dataItemtypeURL is only defined for extended schema.");<% else %>return <%= schema.data_itemtype_url %>;<% end %>
+    }
+<% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+    /**
+     * {@inheritDoc}
+     */
+    public <%= info[:type] %> get<%= name.to_s.camelize %>() {<%= " // Specific Types: #{info[:specific_types]}" unless info[:specific_types].blank? %>
+        return <%= name %>;
+    }
+<% end unless SchemaMapper::Schema.property_chain(schema, {}).blank? %>
+}

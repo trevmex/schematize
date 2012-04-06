@@ -1,0 +1,15 @@
+package <%= schema.package %>;
+<% schema.imports.uniq.each do |klass| %>
+import <%= klass %>;<% end unless schema.imports.blank? %>
+
+/**
+ * The interface for <%= schema.url %>
+ */
+public interface <%= schema.type %><%= " extends #{schema.parent}" unless schema.parent.blank? %> {
+  <% schema.properties.each do |name, info| %>
+    /**
+     * @return the <%= name %>
+     */
+    <%= info[:type] %> get<%= name.to_s.camelize %>();<%= " // Specific Types: #{info[:specific_types]}" unless info[:specific_types].blank? %>
+  <% end unless schema.properties.blank? %>
+}
