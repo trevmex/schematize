@@ -9,6 +9,9 @@ gem "activesupport"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development, :test do
+  gem 'guard-rspec'
+  gem 'guard-cucumber'
+  gem 'growl'
   gem "rspec", "~> 2.8.0"
   gem "yard", "~> 0.7"
   gem "rdoc", "~> 3.12"
