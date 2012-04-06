@@ -14,7 +14,7 @@ module Schematize
         files.each do |template|
           eval <<-eos
             require File.join(lib_dir, '#{template}')
-            mapped_template = SchemaMapper::#{template.to_s.camelize}.new(schema, {:output_dir => options[:output_dir]})
+            mapped_template = Schematize::#{template.to_s.camelize}.new(schema, {:output_dir => options[:output_dir]})
             puts 'Writing #{type.titleize} #{template.to_s.titleize}'
             mapped_template.write_to_file
           eos
