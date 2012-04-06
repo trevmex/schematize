@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-<% imports = [] %><% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %><% imports.push(info[:import]) unless info[:import].blank? %><% end %>
+<% imports = [] %><% Schematize::Schema.property_chain(schema, {}).each do |name, info| %><% imports.push(info[:import]) unless info[:import].blank? %><% end %>
 import <%= schema.package %>.<%= schema.type %>;
 <% imports.uniq.sort {|x,y| x.to_s <=> y.to_s }.each do |import| %>
 <%= "import #{import};" unless import == "#{schema.package}.#{schema.type}" %><% end %>
@@ -32,7 +32,7 @@ public class Immutable<%= schema.type %>Test {
         assertEquals("<%= schema.data_itemtype_url %>", empty<%= schema.type %>.getDataItemtypeURL());
 <% end %>
     }
-<% SchemaMapper::Schema.property_chain(schema, {}).each do |name, info| %>
+<% Schematize::Schema.property_chain(schema, {}).each do |name, info| %>
     @Test
     public void when<%= name.to_s.camelize %>IsNotDefined_<%= name %>IsNull() {
         assertNull(empty<%= schema.type %>.get<%= name.to_s.camelize %>());
@@ -44,5 +44,5 @@ public class Immutable<%= schema.type %>Test {
 
         assertEquals(expected, new Immutable<%= schema.type %>.Builder().<%= name %>(expected).get().get<%= name.to_s.camelize %>());
     }
-<% end unless SchemaMapper::Schema.property_chain(schema, {}).blank? %>
+<% end unless Schematize::Schema.property_chain(schema, {}).blank? %>
 }
