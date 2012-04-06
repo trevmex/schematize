@@ -6,13 +6,16 @@ module Schematize
       return false if type.blank? || !type.respond_to?(:to_sym)
       [:String, :Number, :Integer, :Float, :URL, :DateTime, :Duration, :Boolean].include? type.to_sym
     end
-    
+
     def self.needs_import?(type)
       return false if type.blank? || !type.respond_to?(:to_sym)
       !([:String, :Number, :Integer, :Float, :Boolean].include?(type.to_sym))
     end
-    
+
     def self.fully_qualified_java_class(type)
+      return false if type.blank? || !type.respond_to?(:to_sym)
+      type = type.to_sym
+
       # Most Schema.org data types map directly to Java classes
       # This mapping is for those that do not.
       java_mappings = {
@@ -23,7 +26,7 @@ module Schematize
 
       java_mappings[type].blank? ? nil : java_mappings[type]
     end
-    
+
     def self.to_java(type, options = {:is_set => false})
       # Most Schema.org data types map directly to Java classes
       # This mapping is for those that do not.

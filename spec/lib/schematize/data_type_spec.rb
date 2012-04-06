@@ -56,5 +56,29 @@ describe Schematize do
         Schematize::DataType.needs_import?(123.45).should be_false
       end
     end
+
+    describe ".fully_qualified_java_class" do
+      it "returns nil for classes that map directly to Java Classes" do
+        Schematize::DataType.fully_qualified_java_class(:String).should be_nil
+        Schematize::DataType.fully_qualified_java_class(:Thing).should be_nil
+      end
+
+      it "returns DateTime class name" do
+        Schematize::DataType.fully_qualified_java_class(:Date).should equal :"org.joda.time.DateTime"
+      end
+
+      it "returns Duration class name" do
+        Schematize::DataType.fully_qualified_java_class(:Duration).should equal :"org.joda.time.Duration"
+      end
+
+      it "returns URL class name" do
+        Schematize::DataType.fully_qualified_java_class(:URL).should equal :"java.net.URL"
+      end
+
+      it "returns correct results for string representations" do
+        Schematize::DataType.fully_qualified_java_class("URL").should equal :"java.net.URL"
+        Schematize::DataType.fully_qualified_java_class("String").should be_nil
+      end
+    end
   end
 end
