@@ -1,4 +1,4 @@
-= schematize <img src="https://secure.travis-ci.org/trevmex/schematize.png" alt="CI Status" />
+= schematize https://secure.travis-ci.org/trevmex/schematize.png
 
 Description goes here.
 
