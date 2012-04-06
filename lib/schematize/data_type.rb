@@ -3,11 +3,13 @@ require 'active_support/core_ext/object/blank'
 module Schematize
   class DataType
     def self.native_java_class?(type)
-      [:String, :Number, :Integer, :Float, :URL, :DateTime, :Duration, :Boolean].include? type
+      return false if type.blank? || !type.respond_to?(:to_sym)
+      [:String, :Number, :Integer, :Float, :URL, :DateTime, :Duration, :Boolean].include? type.to_sym
     end
     
     def self.needs_import?(type)
-      !([:String, :Number, :Integer, :Float, :Boolean].include?(type))
+      return false if type.blank? || !type.respond_to?(:to_sym)
+      !([:String, :Number, :Integer, :Float, :Boolean].include?(type.to_sym))
     end
     
     def self.fully_qualified_java_class(type)
