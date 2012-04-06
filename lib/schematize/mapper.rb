@@ -3,7 +3,7 @@ require 'active_support/core_ext/string/inflections'
 
 module Schematize
   class Mapper
-    def self.generate(files=[:dsl, :interface, :implementation, :implementation_test], options={:pcakage => "", :output_dir => File.absolute_path(File.join(File.dirname(__FILE__), '..', 'output'))})
+    def self.generate(files=[:interface, :implementation, :implementation_test], options={:pcakage => "", :output_dir => File.absolute_path(File.join(File.dirname(__FILE__), '..', 'output'))})
       files = [files] unless files.respond_to?(:each)
       #SchemaMapper::Schema.types.each do |type|
       ["AdministrativeArea", "AggregateRating", "Article", "AudioObject", "ContactPoint", "Country", "CreativeWork", "Distance", "EducationalOrganization", "Enumeration", "Event", "ImageObject", "Intangible", "ItemAvailability", "ItemList", "MediaObject", "Movie", "NewsArticle", "Offer", "OfferItemCondition", "Organization", "Person", "Place", "PostalAddress", "Quantity", "Rating", "Review", "StructuredValue", "Thing", "TVEpisode", "TVSeason", "TVSeries", "UserComments", "UserInteraction", "VideoObject"].each do |type|
